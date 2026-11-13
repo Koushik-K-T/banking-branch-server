@@ -24,6 +24,22 @@ async function refreshUserList() {
 
 function addUser() {
   const name = document.getElementById('new-user-name').value.trim();
+  const role = document.getElementById('new-user-role').value;
+  if (!name) return alert('Enter a username');
+  if (!role) return alert('Select a role');
+  // First add the user
+  callUserAPI('add', name).then(r => {
+    if (r.error) { alert(r.error); return; }
+    // Then add user to the role group
+    callGroupAPIExtra('add_to_group', name, {group: role}).then(res => {
+      alert(res.result || res.error);
+      // Refresh both tables
+      refreshUserList();
+      refreshGroupList();
+    });
+  });
+}
+  const name = document.getElementById('new-user-name').value.trim();
   if (!name) return alert('Enter a username');
   callUserAPI('add', name).then(r => {
     alert(r.result || r.error);
@@ -53,6 +69,25 @@ function callGroupAPI(action, name = "") {
 
 async function refreshGroupList() {
   const data = await callGroupAPI('group_list');
+  const tbody = document.getElementById('group-table-body');
+  tbody.innerHTML = '';
+  const roleSelect = document.getElementById('new-user-role');
+  if (roleSelect) roleSelect.innerHTML = '<option value="">Select role</option>';
+  if (data.groups) {
+    data.groups.forEach(g => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${g}</td>
+        <td><button onclick="deleteGroup('${g}')">Delete</button></td>
+        <td><button onclick="showGroupMembers('${g}')">Members</button></td>`;
+      tbody.appendChild(tr);
+      if (roleSelect) {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        roleSelect.appendChild(opt);
+      }
+    });
+  }
   const tbody = document.getElementById('group-table-body');
   tbody.innerHTML = '';
   if (data.groups) {
