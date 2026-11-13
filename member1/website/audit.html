@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Logs — Banking Branch Server</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#f0f4f8;color:#333}
+    header{background:#1a3c5e;color:white;padding:20px 40px}
+    header h1{font-size:22px}
+    nav{background:#2c5f8a;display:flex;flex-wrap:wrap;padding:0 40px}
+    nav a{color:white;text-decoration:none;padding:12px 18px;font-size:13px;display:block}
+    nav a:hover,nav a.active{background:#1a3c5e}
+    .content{padding:30px 40px}
+    .card{background:white;border-radius:8px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:20px}
+    .card h3{color:#1a3c5e;margin-bottom:12px}
+    .note{background:#fff8e1;border-left:4px solid #f0a500;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a3c5e;color:white;padding:10px 12px;text-align:left}
+    td{padding:9px 12px;border-bottom:1px solid #eee}
+    tr:hover{background:#f9f9f9}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-size:12px}
+  </style>
+</head>
+<body>
+  <header><h1>🏦 Banking Branch Server — Audit Logs</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="employees.html">Employees</a>
+    <a href="audit.html" class="active">Audit Logs</a>
+    <a href="reports.html">Reports</a>
+    <a href="backup.html">Backup</a>
+    <a href="security.html">Security</a>
+    <a href="cgi-bin/status.sh">Live Status</a>
+  </nav>
+  <div class="content">
+    <div class="note">⚠️ Audit logs are generated every minute by <code>audit_logger.sh</code> and stored in <code>/data/audit/</code>. Only the <strong>auditors</strong> group has write access. Managers have read-only access. Logs are compressed and moved to <code>/data/reports/</code> at 6:00 PM daily.</div>
+    <div class="card">
+      <h3>📋 Audit Logging Details</h3>
+      <table>
+        <tr><th>Property</th><th>Detail</th></tr>
+        <tr><td>Script</td><td>/scripts/audit_logger.sh</td></tr>
+        <tr><td>Storage Path</td><td>/data/audit/</td></tr>
+        <tr><td>LVM Volume</td><td>lv_audit (15 GB) on vg_branchdata</td></tr>
+        <tr><td>File Format</td><td>AUDIT_YYYYMMDD_HHMMSS.log</td></tr>
+        <tr><td>Frequency</td><td>Every minute via cron</td></tr>
+        <tr><td>Write Access</td><td>auditors group only</td></tr>
+        <tr><td>Read Access</td><td>auditors, managers, itadmin</td></tr>
+        <tr><td>Processed At</td><td>6:00 PM — compressed and moved to /data/reports/</td></tr>
+        <tr><td>Ingest Log</td><td>/var/logs/branch/audit_ingest.log</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>📄 Audit Log Entry Format</h3>
+      <table>
+        <tr><th>Field</th><th>Example Value</th></tr>
+        <tr><td>Timestamp</td><td>Wed Nov 11 14:32:01 UTC 2026</td></tr>
+        <tr><td>User</td><td>emp1 / mgr1 / audit1 / itadmin</td></tr>
+        <tr><td>Action</td><td>LOGIN, LOGOUT, FILE_ACCESS, TRANSFER, REPORT_VIEW, CONFIG_CHANGE, FAILED_LOGIN</td></tr>
+        <tr><td>Source IP</td><td>192.168.1.xxx</td></tr>
+        <tr><td>Status</td><td>SUCCESS / FAILED</td></tr>
+        <tr><td>Session ID</td><td>SESS47821</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔍 Useful Commands to Check Audit Logs</h3>
+      <table>
+        <tr><th>Task</th><th>Command</th></tr>
+        <tr><td>List recent audit log files</td><td><code>ls -lt /data/audit/AUDIT_*.log | head -10</code></td></tr>
+        <tr><td>View latest log entry</td><td><code>cat $(ls -t /data/audit/AUDIT_*.log | head -1)</code></td></tr>
+        <tr><td>Count today's logs</td><td><code>ls /data/audit/AUDIT_$(date +%Y%m%d)_*.log | wc -l</code></td></tr>
+        <tr><td>Check ingest log</td><td><code>tail -20 /var/logs/branch/audit_ingest.log</code></td></tr>
+        <tr><td>Find failed events</td><td><code>grep -l 'FAILED' /data/audit/AUDIT_*.log</code></td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

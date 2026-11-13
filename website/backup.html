@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup — Banking Branch Server</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#f0f4f8;color:#333}
+    header{background:#1a3c5e;color:white;padding:20px 40px}
+    header h1{font-size:22px}
+    nav{background:#2c5f8a;display:flex;flex-wrap:wrap;padding:0 40px}
+    nav a{color:white;text-decoration:none;padding:12px 18px;font-size:13px;display:block}
+    nav a:hover,nav a.active{background:#1a3c5e}
+    .content{padding:30px 40px}
+    .card{background:white;border-radius:8px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:20px}
+    .card h3{color:#1a3c5e;margin-bottom:12px}
+    .note{background:#fce4ec;border-left:4px solid #c62828;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a3c5e;color:white;padding:10px 12px;text-align:left}
+    td{padding:9px 12px;border-bottom:1px solid #eee}
+    tr:hover{background:#f9f9f9}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-size:12px}
+  </style>
+</head>
+<body>
+  <header><h1>🏦 Banking Branch Server — Backup Status</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="employees.html">Employees</a>
+    <a href="audit.html">Audit Logs</a>
+    <a href="reports.html">Reports</a>
+    <a href="backup.html" class="active">Backup</a>
+    <a href="security.html">Security</a>
+    <a href="cgi-bin/status.sh">Live Status</a>
+  </nav>
+  <div class="content">
+    <div class="note">🔴 If backup fails, check <code>/var/logs/branch/backup_YYYYMMDD.log</code> immediately. Never skip a nightly backup — audit data is compliance-critical.</div>
+    <div class="card">
+      <h3>💾 Backup Schedule & Policy</h3>
+      <table>
+        <tr><th>Property</th><th>Detail</th></tr>
+        <tr><td>Script</td><td>/scripts/bank_backup.sh</td></tr>
+        <tr><td>Runs At</td><td>11:30 PM daily via cron</td></tr>
+        <tr><td>Method</td><td>Incremental rsync</td></tr>
+        <tr><td>Source Directories</td><td>/data/reports and /data/audit</td></tr>
+        <tr><td>Daily Destination</td><td>/backup/branch/daily/</td></tr>
+        <tr><td>Weekly Snapshot</td><td>/backup/branch/weekly/ — every Sunday</td></tr>
+        <tr><td>Retention Policy</td><td>Last 7 daily backups kept, older ones auto-deleted</td></tr>
+        <tr><td>Log File</td><td>/var/logs/branch/backup_YYYYMMDD.log</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔁 Data Restoration Procedure</h3>
+      <table>
+        <tr><th>Step</th><th>Command</th></tr>
+        <tr><td>1. Identify lost file</td><td><code>ls /data/reports/</code></td></tr>
+        <tr><td>2. Check backup</td><td><code>ls /backup/branch/daily/reports/</code></td></tr>
+        <tr><td>3. Restore specific file</td><td><code>cp /backup/branch/daily/reports/FILE /data/reports/</code></td></tr>
+        <tr><td>4. Full restore from rsync</td><td><code>rsync -av /backup/branch/daily/reports/ /data/reports/</code></td></tr>
+        <tr><td>5. Restore from weekly</td><td><code>tar -xzf /backup/branch/weekly/weekly_DATE.tar.gz -C /</code></td></tr>
+        <tr><td>6. Verify</td><td><code>ls -la /data/reports/</code></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔍 Useful Commands</h3>
+      <table>
+        <tr><th>Task</th><th>Command</th></tr>
+        <tr><td>Run backup manually</td><td><code>sudo /scripts/bank_backup.sh</code></td></tr>
+        <tr><td>Check backup log</td><td><code>tail -20 /var/logs/branch/backup_$(date +%Y%m%d).log</code></td></tr>
+        <tr><td>List daily backups</td><td><code>ls -lh /backup/branch/daily/</code></td></tr>
+        <tr><td>List weekly snapshots</td><td><code>ls -lh /backup/branch/weekly/</code></td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

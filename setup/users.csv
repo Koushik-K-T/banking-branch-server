@@ -1,0 +1,9 @@
+username,group,role
+emp1,employees,Bank Employee
+emp2,employees,Bank Employee
+emp3,employees,Bank Employee
+mgr1,managers,Branch Manager
+mgr2,managers,Branch Manager
+audit1,auditors,Auditor
+audit2,auditors,Auditor
+itadmin,sudo,IT Administrator

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security — Banking Branch Server</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#f0f4f8;color:#333}
+    header{background:#1a3c5e;color:white;padding:20px 40px}
+    header h1{font-size:22px}
+    nav{background:#2c5f8a;display:flex;flex-wrap:wrap;padding:0 40px}
+    nav a{color:white;text-decoration:none;padding:12px 18px;font-size:13px;display:block}
+    nav a:hover,nav a.active{background:#1a3c5e}
+    .content{padding:30px 40px}
+    .card{background:white;border-radius:8px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:20px}
+    .card h3{color:#1a3c5e;margin-bottom:12px}
+    .note{background:#fff8e1;border-left:4px solid #f0a500;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a3c5e;color:white;padding:10px 12px;text-align:left}
+    td{padding:9px 12px;border-bottom:1px solid #eee}
+    tr:hover{background:#f9f9f9}
+    .allow{color:#2e7d32;font-weight:bold}
+    .deny{color:#c62828;font-weight:bold}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-size:12px}
+  </style>
+</head>
+<body>
+  <header><h1>🏦 Banking Branch Server — Security Configuration</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="employees.html">Employees</a>
+    <a href="audit.html">Audit Logs</a>
+    <a href="reports.html">Reports</a>
+    <a href="backup.html">Backup</a>
+    <a href="security.html" class="active">Security</a>
+    <a href="cgi-bin/status.sh">Live Status</a>
+  </nav>
+  <div class="content">
+    <div class="note">⚠️ SSH is restricted to <strong>itadmin</strong> only on port <strong>2222</strong>. Root login is disabled. All other inbound traffic is blocked by UFW.</div>
+    <div class="card">
+      <h3>🔥 UFW Firewall Rules</h3>
+      <table>
+        <tr><th>Port</th><th>Protocol</th><th>Service</th><th>Status</th></tr>
+        <tr><td>2222</td><td>TCP</td><td>SSH (non-default port)</td><td><span class="allow">ALLOW</span></td></tr>
+        <tr><td>80</td><td>TCP</td><td>HTTP — Apache dashboard</td><td><span class="allow">ALLOW</span></td></tr>
+        <tr><td>All others</td><td>ANY</td><td>—</td><td><span class="deny">DENY</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔑 SSH Hardening Config</h3>
+      <table>
+        <tr><th>Setting</th><th>Value</th></tr>
+        <tr><td>SSH Port</td><td>2222 (non-default for security)</td></tr>
+        <tr><td>Root Login</td><td><span class="deny">Disabled</span></td></tr>
+        <tr><td>Allowed Groups</td><td>sudo (itadmin only)</td></tr>
+        <tr><td>Max Auth Tries</td><td>3</td></tr>
+        <tr><td>Login Grace Time</td><td>30 seconds</td></tr>
+        <tr><td>Public Key Auth</td><td><span class="allow">Enabled</span></td></tr>
+        <tr><td>Empty Passwords</td><td><span class="deny">Disabled</span></td></tr>
+        <tr><td>Config Backup</td><td>/etc/ssh/sshd_config.bak</td></tr>
+        <tr><td>Login Banner</td><td>/etc/ssh/banner.txt</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🛡️ Account & File Security Policy</h3>
+      <table>
+        <tr><th>Policy</th><th>Setting</th></tr>
+        <tr><td>Force password change on first login</td><td>All standard users (chage -d 0)</td></tr>
+        <tr><td>Account lock after inactivity</td><td>45 days (chage -I 45)</td></tr>
+        <tr><td>Sticky bit</td><td>/data/employee, /data/audit, /data/reports</td></tr>
+        <tr><td>ACL — managers read audit</td><td>setfacl -m g:managers:r-x /data/audit</td></tr>
+        <tr><td>ACL — auditors read reports</td><td>setfacl -m g:auditors:r-x /data/reports</td></tr>
+        <tr><td>Log directory</td><td>/var/logs/branch — itadmin only (chmod 700)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔍 Useful Security Commands</h3>
+      <table>
+        <tr><th>Task</th><th>Command</th></tr>
+        <tr><td>Check UFW status</td><td><code>sudo ufw status verbose</code></td></tr>
+        <tr><td>Check SSH port</td><td><code>ss -tlnp | grep 2222</code></td></tr>
+        <tr><td>Check failed logins</td><td><code>grep 'Failed password' /var/log/auth.log | tail -20</code></td></tr>
+        <tr><td>Check file ACLs</td><td><code>getfacl /data/audit</code></td></tr>
+        <tr><td>List user permissions</td><td><code>ls -la /data/</code></td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

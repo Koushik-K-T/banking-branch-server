@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employees — Banking Branch Server</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#f0f4f8;color:#333}
+    header{background:#1a3c5e;color:white;padding:20px 40px}
+    header h1{font-size:22px}
+    nav{background:#2c5f8a;display:flex;flex-wrap:wrap;padding:0 40px}
+    nav a{color:white;text-decoration:none;padding:12px 18px;font-size:13px;display:block}
+    nav a:hover,nav a.active{background:#1a3c5e}
+    .content{padding:30px 40px}
+    .card{background:white;border-radius:8px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:20px}
+    .card h3{color:#1a3c5e;margin-bottom:12px}
+    .note{background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a3c5e;color:white;padding:10px 12px;text-align:left}
+    td{padding:9px 12px;border-bottom:1px solid #eee}
+    tr:hover{background:#f9f9f9}
+    .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+    .rw{background:#e8f5e9;color:#2e7d32}
+    .ro{background:#e3f2fd;color:#1565c0}
+    .no{background:#f5f5f5;color:#999}
+    .admin{background:#ffebee;color:#c62828}
+  </style>
+</head>
+<body>
+  <header><h1>🏦 Banking Branch Server — Employee Storage</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="employees.html" class="active">Employees</a>
+    <a href="audit.html">Audit Logs</a>
+    <a href="reports.html">Reports</a>
+    <a href="backup.html">Backup</a>
+    <a href="security.html">Security</a>
+    <a href="cgi-bin/status.sh">Live Status</a>
+  </nav>
+  <div class="content">
+    <div class="note">ℹ️ Employee shared storage is at <code>/data/employee</code> — mounted on LVM logical volume <code>lv_employee</code> (10 GB). Only the <strong>employees</strong> group has write access.</div>
+    <div class="card">
+      <h3>👥 All Users & Groups</h3>
+      <table>
+        <tr><th>Username</th><th>Group</th><th>Role</th><th>Sudo</th><th>SSH Access</th></tr>
+        <tr><td>emp1</td><td>employees</td><td>Bank Employee</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>emp2</td><td>employees</td><td>Bank Employee</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>emp3</td><td>employees</td><td>Bank Employee</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>mgr1</td><td>managers</td><td>Branch Manager</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>mgr2</td><td>managers</td><td>Branch Manager</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>audit1</td><td>auditors</td><td>Auditor</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>audit2</td><td>auditors</td><td>Auditor</td><td><span class="badge no">No</span></td><td><span class="badge no">No</span></td></tr>
+        <tr><td>itadmin</td><td>sudo</td><td>IT Administrator</td><td><span class="badge admin">Yes</span></td><td><span class="badge rw">Yes (port 2222)</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔐 Directory Access Matrix</h3>
+      <table>
+        <tr><th>Directory</th><th>employees</th><th>managers</th><th>auditors</th><th>itadmin</th></tr>
+        <tr><td>/data/employee</td><td><span class="badge rw">Read+Write</span></td><td><span class="badge ro">Read</span></td><td><span class="badge no">None</span></td><td><span class="badge admin">Full</span></td></tr>
+        <tr><td>/data/audit</td><td><span class="badge no">None</span></td><td><span class="badge ro">Read</span></td><td><span class="badge rw">Read+Write</span></td><td><span class="badge admin">Full</span></td></tr>
+        <tr><td>/data/reports</td><td><span class="badge no">None</span></td><td><span class="badge rw">Read+Write</span></td><td><span class="badge ro">Read</span></td><td><span class="badge admin">Full</span></td></tr>
+        <tr><td>/var/logs/branch</td><td><span class="badge no">None</span></td><td><span class="badge no">None</span></td><td><span class="badge no">None</span></td><td><span class="badge admin">Full</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>📦 Account Security Policy</h3>
+      <table>
+        <tr><th>Policy</th><th>Setting</th></tr>
+        <tr><td>Default Password</td><td>Branch@2024 (must change on first login)</td></tr>
+        <tr><td>Force password change on first login</td><td>All standard users</td></tr>
+        <tr><td>Account lock after inactivity</td><td>45 days</td></tr>
+        <tr><td>Sticky bit on shared dirs</td><td>/data/employee, /data/audit, /data/reports</td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

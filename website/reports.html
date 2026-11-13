@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Banking Branch Server</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;background:#f0f4f8;color:#333}
+    header{background:#1a3c5e;color:white;padding:20px 40px}
+    header h1{font-size:22px}
+    nav{background:#2c5f8a;display:flex;flex-wrap:wrap;padding:0 40px}
+    nav a{color:white;text-decoration:none;padding:12px 18px;font-size:13px;display:block}
+    nav a:hover,nav a.active{background:#1a3c5e}
+    .content{padding:30px 40px}
+    .card{background:white;border-radius:8px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:20px}
+    .card h3{color:#1a3c5e;margin-bottom:12px}
+    .note{background:#e8f5e9;border-left:4px solid #2e7d32;padding:12px 16px;border-radius:4px;font-size:13px;margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a3c5e;color:white;padding:10px 12px;text-align:left}
+    td{padding:9px 12px;border-bottom:1px solid #eee}
+    tr:hover{background:#f9f9f9}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px;font-size:12px}
+  </style>
+</head>
+<body>
+  <header><h1>🏦 Banking Branch Server — Audit Reports</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="employees.html">Employees</a>
+    <a href="audit.html">Audit Logs</a>
+    <a href="reports.html" class="active">Reports</a>
+    <a href="backup.html">Backup</a>
+    <a href="security.html">Security</a>
+    <a href="cgi-bin/status.sh">Live Status</a>
+  </nav>
+  <div class="content">
+    <div class="note">✅ Daily audit reports are generated automatically at 6:00 PM by <code>audit_report.sh</code>. Reports summarise all events, counts by action and user, and are stored in <code>/data/reports/</code>.</div>
+    <div class="card">
+      <h3>📊 Report Generation Pipeline</h3>
+      <table>
+        <tr><th>Step</th><th>What Happens</th></tr>
+        <tr><td>1</td><td>audit_report.sh triggers at 6:00 PM via cron</td></tr>
+        <tr><td>2</td><td>All AUDIT_*.log files in /data/audit/ are read and processed</td></tr>
+        <tr><td>3</td><td>Total, successful, and failed event counts are computed</td></tr>
+        <tr><td>4</td><td>Events are grouped by action type and by user</td></tr>
+        <tr><td>5</td><td>Each log file is compressed with gzip and moved to /data/reports/</td></tr>
+        <tr><td>6</td><td>AUDIT_REPORT_YYYYMMDD.txt summary is written to /data/reports/</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>📁 Report Storage Details</h3>
+      <table>
+        <tr><th>Property</th><th>Detail</th></tr>
+        <tr><td>Script</td><td>/scripts/audit_report.sh</td></tr>
+        <tr><td>Report File</td><td>/data/reports/AUDIT_REPORT_YYYYMMDD.txt</td></tr>
+        <tr><td>Compressed Logs</td><td>/data/reports/AUDIT_*.log.gz</td></tr>
+        <tr><td>LVM Volume</td><td>lv_reports (8 GB) on vg_branchdata</td></tr>
+        <tr><td>Write Access</td><td>managers group</td></tr>
+        <tr><td>Read Access</td><td>auditors, itadmin</td></tr>
+        <tr><td>Backed Up At</td><td>11:30 PM daily via bank_backup.sh</td></tr>
+        <tr><td>Process Log</td><td>/var/logs/branch/audit_YYYYMMDD.log</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔍 Useful Commands</h3>
+      <table>
+        <tr><th>Task</th><th>Command</th></tr>
+        <tr><td>View today's report</td><td><code>cat /data/reports/AUDIT_REPORT_$(date +%Y%m%d).txt</code></td></tr>
+        <tr><td>List all reports</td><td><code>ls -lt /data/reports/AUDIT_REPORT_*.txt</code></td></tr>
+        <tr><td>Run report manually</td><td><code>sudo /scripts/audit_report.sh</code></td></tr>
+        <tr><td>Check process log</td><td><code>tail -20 /var/logs/branch/audit_$(date +%Y%m%d).log</code></td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
