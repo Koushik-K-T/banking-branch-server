@@ -27,10 +27,12 @@ body{font-size:15px}
     .ro{background:#e3f2fd;color:#1565c0}
     .no{background:#f5f5f5;color:#999}
     .admin{background:#ffebee;color:#c62828}
+    .role-icon{width:1em;height:1em;vertical-align:middle;margin-right:4px;}
+
   </style>
 </head>
 <body>
-  <header><h1>🏦 Banking Branch Server — Employee Storage</h1></header>
+  <header><h1>Banking Branch Server — Employee Storage</h1></header>
   <nav>
     <a href="index.html">Home</a>
     <a href="employees.html" class="active">Employees</a>
@@ -43,7 +45,7 @@ body{font-size:15px}
   <div class="content">
     <div class="note">ℹ️ Employee shared storage is at <code>/data/employee</code> — mounted on LVM logical volume <code>lv_employee</code> (10 GB). Only the <strong>employees</strong> group has write access.</div>
 <div class="card">
-  <h3>👥 User Administration</h3>
+  <h3>User Administration</h3>
   <div style="margin-bottom:8px;">
     <input type="text" id="new-user-name" placeholder="New username" style="padding:4px;">
     <button onclick="addUser()">Add User</button>
@@ -53,6 +55,28 @@ body{font-size:15px}
     <tbody id="user-table-body"></tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>🔧 Group (Role) Administration</h3>
+  <div style="margin-bottom:8px;">
+    <input type="text" id="new-group-name" placeholder="New group name" style="padding:4px;">
+    <button onclick="addGroup()">Add Group</button>
+  </div>
+  <table>
+    <tr><th>Group</th><th>Delete</th><th>Members</th></tr>
+    <tbody id="group-table-body"></tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <input type="text" id="group-user-name" placeholder="User name" style="padding:4px;">
+    <select id="group-name-select" style="padding:4px; margin-left:4px;">
+      <!-- options will be filled by refreshGroupList() -->
+    </select>
+    <button onclick="addUserToGroup()">Add to Group</button>
+    <button onclick="removeUserFromGroup()">Remove from Group</button>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
 <script src="js/admin.js"></script>
     <div class="card">
       <h3>👥 All Users & Groups</h3>
@@ -69,7 +93,7 @@ body{font-size:15px}
       </table>
     </div>
 <div class="card">
-  <h3>👥 User Administration</h3>
+  <h3>User Administration</h3>
   <div style="margin-bottom:8px;">
     <input type="text" id="new-user-name" placeholder="New username" style="padding:4px;">
     <button onclick="addUser()">Add User</button>
@@ -79,6 +103,28 @@ body{font-size:15px}
     <tbody id="user-table-body"></tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>🔧 Group (Role) Administration</h3>
+  <div style="margin-bottom:8px;">
+    <input type="text" id="new-group-name" placeholder="New group name" style="padding:4px;">
+    <button onclick="addGroup()">Add Group</button>
+  </div>
+  <table>
+    <tr><th>Group</th><th>Delete</th><th>Members</th></tr>
+    <tbody id="group-table-body"></tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <input type="text" id="group-user-name" placeholder="User name" style="padding:4px;">
+    <select id="group-name-select" style="padding:4px; margin-left:4px;">
+      <!-- options will be filled by refreshGroupList() -->
+    </select>
+    <button onclick="addUserToGroup()">Add to Group</button>
+    <button onclick="removeUserFromGroup()">Remove from Group</button>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
 <script src="js/admin.js"></script>
     <div class="card">
       <h3>🔐 Directory Access Matrix</h3>
@@ -91,7 +137,7 @@ body{font-size:15px}
       </table>
     </div>
 <div class="card">
-  <h3>👥 User Administration</h3>
+  <h3>User Administration</h3>
   <div style="margin-bottom:8px;">
     <input type="text" id="new-user-name" placeholder="New username" style="padding:4px;">
     <button onclick="addUser()">Add User</button>
@@ -101,6 +147,28 @@ body{font-size:15px}
     <tbody id="user-table-body"></tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>🔧 Group (Role) Administration</h3>
+  <div style="margin-bottom:8px;">
+    <input type="text" id="new-group-name" placeholder="New group name" style="padding:4px;">
+    <button onclick="addGroup()">Add Group</button>
+  </div>
+  <table>
+    <tr><th>Group</th><th>Delete</th><th>Members</th></tr>
+    <tbody id="group-table-body"></tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <input type="text" id="group-user-name" placeholder="User name" style="padding:4px;">
+    <select id="group-name-select" style="padding:4px; margin-left:4px;">
+      <!-- options will be filled by refreshGroupList() -->
+    </select>
+    <button onclick="addUserToGroup()">Add to Group</button>
+    <button onclick="removeUserFromGroup()">Remove from Group</button>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
 <script src="js/admin.js"></script>
     <div class="card">
       <h3>📦 Account Security Policy</h3>
@@ -113,7 +181,7 @@ body{font-size:15px}
       </table>
     </div>
 <div class="card">
-  <h3>👥 User Administration</h3>
+  <h3>User Administration</h3>
   <div style="margin-bottom:8px;">
     <input type="text" id="new-user-name" placeholder="New username" style="padding:4px;">
     <button onclick="addUser()">Add User</button>
@@ -123,10 +191,32 @@ body{font-size:15px}
     <tbody id="user-table-body"></tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>🔧 Group (Role) Administration</h3>
+  <div style="margin-bottom:8px;">
+    <input type="text" id="new-group-name" placeholder="New group name" style="padding:4px;">
+    <button onclick="addGroup()">Add Group</button>
+  </div>
+  <table>
+    <tr><th>Group</th><th>Delete</th><th>Members</th></tr>
+    <tbody id="group-table-body"></tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <input type="text" id="group-user-name" placeholder="User name" style="padding:4px;">
+    <select id="group-name-select" style="padding:4px; margin-left:4px;">
+      <!-- options will be filled by refreshGroupList() -->
+    </select>
+    <button onclick="addUserToGroup()">Add to Group</button>
+    <button onclick="removeUserFromGroup()">Remove from Group</button>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
 <script src="js/admin.js"></script>
   </div>
 <div class="card">
-  <h3>👥 User Administration</h3>
+  <h3>User Administration</h3>
   <div style="margin-bottom:8px;">
     <input type="text" id="new-user-name" placeholder="New username" style="padding:4px;">
     <button onclick="addUser()">Add User</button>
@@ -136,6 +226,28 @@ body{font-size:15px}
     <tbody id="user-table-body"></tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>🔧 Group (Role) Administration</h3>
+  <div style="margin-bottom:8px;">
+    <input type="text" id="new-group-name" placeholder="New group name" style="padding:4px;">
+    <button onclick="addGroup()">Add Group</button>
+  </div>
+  <table>
+    <tr><th>Group</th><th>Delete</th><th>Members</th></tr>
+    <tbody id="group-table-body"></tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <input type="text" id="group-user-name" placeholder="User name" style="padding:4px;">
+    <select id="group-name-select" style="padding:4px; margin-left:4px;">
+      <!-- options will be filled by refreshGroupList() -->
+    </select>
+    <button onclick="addUserToGroup()">Add to Group</button>
+    <button onclick="removeUserFromGroup()">Remove from Group</button>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>
